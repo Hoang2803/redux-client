@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import {
+  Box,
   Button,
+  CircularProgress,
   FormControl,
   MenuItem,
   Select,
@@ -19,7 +21,7 @@ const TodoList = () => {
   const [select, setSelect] = useState("Medium");
 
   const dispatch = useDispatch();
-  const todoList = useSelector(todosRemainingSelector);
+  const { todoList, loading } = useSelector(todosRemainingSelector);
 
   const handleAddTodo = () => {
     if (name === "") {
@@ -79,16 +81,22 @@ const TodoList = () => {
       </div>
 
       <div className="todo-content">
-        {todoList.map((todo, index) => {
-          return (
-            <Todo
-              key={todo._id ?? index}
-              todo={todo}
-              index={index}
-              handleChangeCheck={handleChangeCheck}
-            />
-          );
-        })}
+        {loading ? (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+            <CircularProgress />
+          </Box>
+        ) : (
+          todoList.map((todo, index) => {
+            return (
+              <Todo
+                key={todo._id ?? index}
+                todo={todo}
+                index={index}
+                handleChangeCheck={handleChangeCheck}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );

@@ -1,6 +1,9 @@
 import { createSelector } from "@reduxjs/toolkit";
 
-export const todoListSelector = (state) => state.todo.todos;
+export const todoListSelector = (state) => ({
+  todoList: state.todo.todos,
+  loading: state.todo.loading,
+});
 export const changeSearchFilterSelector = (state) => state.filters.search;
 export const changeStatusFilterSelector = (state) => state.filters.status;
 export const changePrioritiesFilterSelector = (state) =>
@@ -11,23 +14,29 @@ export const todosRemainingSelector = createSelector(
   changeSearchFilterSelector,
   changeStatusFilterSelector,
   changePrioritiesFilterSelector,
-  (todoList, search, status, priorities) => {
+  (todos, search, status, priorities) => {
     if (status === "all") {
-      return todoList.filter((todo) =>
-        priorities.length
-          ? todo.name.toLowerCase().includes(search.toLowerCase()) &&
-            priorities.includes(todo.priority)
-          : todo.name.toLowerCase().includes(search.toLowerCase())
-      );
+      return {
+        todoList: todos.todoList.filter((todo) =>
+          priorities.length
+            ? todo.name.toLowerCase().includes(search.toLowerCase()) &&
+              priorities.includes(todo.priority)
+            : todo.name.toLowerCase().includes(search.toLowerCase())
+        ),
+        loading: todos.loading,
+      };
     } else {
-      return todoList.filter((todo) =>
-        priorities.length
-          ? todo.name.toLowerCase().includes(search.toLowerCase()) &&
-            (status === "completed" ? todo.completed : !todo.completed) &&
-            priorities.includes(todo.priority)
-          : todo.name.toLowerCase().includes(search.toLowerCase()) &&
-            (status === "completed" ? todo.completed : !todo.completed)
-      );
+      return {
+        todoList: todos.todoList.filter((todo) =>
+          priorities.length
+            ? todo.name.toLowerCase().includes(search.toLowerCase()) &&
+              (status === "completed" ? todo.completed : !todo.completed) &&
+              priorities.includes(todo.priority)
+            : todo.name.toLowerCase().includes(search.toLowerCase()) &&
+              (status === "completed" ? todo.completed : !todo.completed)
+        ),
+        loading: todos.loading,
+      };
     }
   }
 );
