@@ -21,9 +21,8 @@ const TodoList = () => {
   const [select, setSelect] = useState("Medium");
 
   const dispatch = useDispatch();
-  const { todoList, loading, loadingCreate, loadingUpdate } = useSelector(
-    todosRemainingSelector
-  );
+  const { todoList, loading, loadingCreate, loadingUpdate, loadingDelete } =
+    useSelector(todosRemainingSelector);
 
   const handleAddTodo = () => {
     if (name === "") {
@@ -93,7 +92,8 @@ const TodoList = () => {
               <Todo
                 key={todo._id ?? index}
                 todo={todo}
-                loading={loadingUpdate}
+                loadingUpdate={loadingUpdate}
+                loadingDelete={loadingDelete}
                 handleChangeCheck={handleChangeCheck}
               />
             );

@@ -7,6 +7,7 @@ const todoSlide = createSlice({
     loading: false,
     loadingUpdate: false,
     loadingCreate: false,
+    loadingDelete: false,
     todos: [],
   },
   reducers: {
@@ -43,6 +44,13 @@ const todoSlide = createSlice({
         });
         state.todos = newTodos;
         state.loadingUpdate = false;
+      })
+      .addCase(deleteTodo.pending, (state, action) => {
+        state.loadingDelete = true;
+      })
+      .addCase(deleteTodo.fulfilled, (state, action) => {
+        state.todos = action.payload;
+        state.loadingDelete = false;
       });
   },
 });
@@ -69,5 +77,10 @@ export const updateTodo = createAsyncThunk(
     return res.data.todo;
   }
 );
+
+export const deleteTodo = createAsyncThunk("todo/deleteTodo", async (id) => {
+  const res = await request.delete(`/todo/delete/${id}`);
+  return res.data.todos;
+});
 
 export default todoSlide;

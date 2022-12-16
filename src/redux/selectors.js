@@ -5,6 +5,7 @@ export const todoListSelector = (state) => ({
   loading: state.todo.loading,
   loadingUpdate: state.todo.loadingUpdate,
   loadingCreate: state.todo.loadingCreate,
+  loadingDelete: state.todo.loadingDelete,
 });
 export const changeSearchFilterSelector = (state) => state.filters.search;
 export const changeStatusFilterSelector = (state) => state.filters.status;
@@ -28,6 +29,7 @@ export const todosRemainingSelector = createSelector(
         loading: todos.loading,
         loadingUpdate: todos.loadingUpdate,
         loadingCreate: todos.loadingCreate,
+        loadingDelete: todos.loadingDelete,
       };
     } else {
       return {
