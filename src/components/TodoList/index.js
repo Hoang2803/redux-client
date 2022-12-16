@@ -21,7 +21,9 @@ const TodoList = () => {
   const [select, setSelect] = useState("Medium");
 
   const dispatch = useDispatch();
-  const { todoList, loading } = useSelector(todosRemainingSelector);
+  const { todoList, loading, loadingCreate, loadingUpdate } = useSelector(
+    todosRemainingSelector
+  );
 
   const handleAddTodo = () => {
     if (name === "") {
@@ -91,11 +93,17 @@ const TodoList = () => {
               <Todo
                 key={todo._id ?? index}
                 todo={todo}
-                index={index}
+                loading={loadingUpdate}
                 handleChangeCheck={handleChangeCheck}
               />
             );
           })
+        )}
+
+        {loadingCreate && (
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+            <CircularProgress size={35} />
+          </Box>
         )}
       </div>
     </div>

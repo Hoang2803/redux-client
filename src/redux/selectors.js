@@ -3,6 +3,8 @@ import { createSelector } from "@reduxjs/toolkit";
 export const todoListSelector = (state) => ({
   todoList: state.todo.todos,
   loading: state.todo.loading,
+  loadingUpdate: state.todo.loadingUpdate,
+  loadingCreate: state.todo.loadingCreate,
 });
 export const changeSearchFilterSelector = (state) => state.filters.search;
 export const changeStatusFilterSelector = (state) => state.filters.status;
@@ -24,6 +26,8 @@ export const todosRemainingSelector = createSelector(
             : todo.name.toLowerCase().includes(search.toLowerCase())
         ),
         loading: todos.loading,
+        loadingUpdate: todos.loadingUpdate,
+        loadingCreate: todos.loadingCreate,
       };
     } else {
       return {
@@ -36,6 +40,8 @@ export const todosRemainingSelector = createSelector(
               (status === "completed" ? todo.completed : !todo.completed)
         ),
         loading: todos.loading,
+        loadingUpdate: todos.loadingUpdate,
+        loadingCreate: todos.loadingCreate,
       };
     }
   }

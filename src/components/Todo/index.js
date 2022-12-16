@@ -1,14 +1,32 @@
-import { Checkbox, Chip, FormControlLabel, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-const Todo = ({ todo, handleChangeCheck }) => {
+import {
+  Checkbox,
+  Chip,
+  CircularProgress,
+  FormControlLabel,
+  Typography,
+} from "@mui/material";
+
+const Todo = ({ todo, handleChangeCheck, loading }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChangeChexBox = (completed, _id) => {
+    handleChangeCheck(completed, _id);
+    setIsLoading(true);
+  };
+
+  useEffect(() => {
+    if (!loading) setIsLoading(false);
+  }, [loading]);
+
   return (
     <div className="todo-item">
       <FormControlLabel
         control={
           <Checkbox
             checked={todo.completed ?? false}
-            onChange={() => handleChangeCheck(todo.completed, todo._id)}
+            onChange={() => handleChangeChexBox(todo.completed, todo._id)}
           />
         }
         label={
@@ -19,6 +37,9 @@ const Todo = ({ todo, handleChangeCheck }) => {
           </Typography>
         }
       />
+
+      {isLoading && <CircularProgress size={25} />}
+
       <Chip
         label={
           <Typography

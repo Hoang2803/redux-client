@@ -5,6 +5,8 @@ const todoSlide = createSlice({
   name: "todo",
   initialState: {
     loading: false,
+    loadingUpdate: false,
+    loadingCreate: false,
     todos: [],
   },
   reducers: {
@@ -21,8 +23,15 @@ const todoSlide = createSlice({
         state.loading = false;
         state.todos = action.payload;
       })
+      .addCase(createTodo.pending, (state, action) => {
+        state.loadingCreate = true;
+      })
       .addCase(createTodo.fulfilled, (state, action) => {
         state.todos.push(action.payload);
+        state.loadingCreate = false;
+      })
+      .addCase(updateTodo.pending, (state, action) => {
+        state.loadingUpdate = true;
       })
       .addCase(updateTodo.fulfilled, (state, action) => {
         const newTodos = state.todos.map((todo) => {
@@ -32,8 +41,8 @@ const todoSlide = createSlice({
             return todo;
           }
         });
-
         state.todos = newTodos;
+        state.loadingUpdate = false;
       });
   },
 });
