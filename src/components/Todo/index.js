@@ -66,7 +66,8 @@ const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
         }
       />
 
-      {isLoadingUpdate || (isLoadingDelete && <CircularProgress size={25} />)}
+      {isLoadingUpdate && <CircularProgress size={25} />}
+      {isLoadingDelete && <CircularProgress size={25} />}
 
       <div className="todo-item-control">
         <div className="todo-priority">
