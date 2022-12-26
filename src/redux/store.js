@@ -1,11 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
-import filtersSlide from "../components/Filters/filtersSlide";
-import todoSlide from "../components/TodoList/todoSlide";
+import filtersSlice from "../pages/TodoPage/Filters/filtersSlice";
+import todoSlice from "../pages/TodoPage/TodoList/todoSlice";
+import modeSlice from "../Themes/modeSlice";
 
 const store = configureStore({
   reducer: {
-    filters: filtersSlide.reducer,
-    todo: todoSlide.reducer,
+    //--------- store of mode (light or dark) -----------
+    mode: modeSlice.reducer,
+
+    //--------- store of todo -------------
+    filters: filtersSlice.reducer,
+    todo: todoSlice.reducer,
   },
 });
 

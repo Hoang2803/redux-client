@@ -1,32 +1,36 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   Box,
   Button,
   CircularProgress,
   FormControl,
+  List,
   MenuItem,
   Select,
   TextField,
 } from "@mui/material";
 
-import "./Todo.css";
-import { useDispatch, useSelector } from "react-redux";
-
-import { createTodo, updateTodo } from "./todoSlide";
-import { todosRemainingSelector } from "../../redux/selectors";
+import { createTodo, updateTodo } from "./todoSlice";
+import { todosRemainingSelector } from "../../../redux/todoSelectors";
+import { CustomPaper } from "../../../Themes/styles";
+import { ShowWarning } from "../../../config/notistack";
+import Theme from "../../../Themes";
 import Todo from "../Todo";
 
 const TodoList = () => {
   const [name, setName] = useState("");
   const [select, setSelect] = useState("Medium");
 
+  // --------- redux -------------
   const dispatch = useDispatch();
   const { todoList, loading, loadingCreate, loadingUpdate, loadingDelete } =
     useSelector(todosRemainingSelector);
 
   const handleAddTodo = () => {
     if (name === "") {
-      window.alert("nhap todo di!");
+      ShowWarning("Please enter todo before!"); // handle when user doesn't enter before adding
     } else {
       dispatch(
         createTodo({
@@ -40,23 +44,36 @@ const TodoList = () => {
     }
   };
 
+  // --------- handle when user update status (completed or todo) ------------
   const handleChangeCheck = (completed, _id) => {
     dispatch(updateTodo({ completed: !completed, id: _id }));
   };
 
   return (
-    <div className="todo-container">
-      <div className="todo-control">
-        <div className="todo-input">
+    <CustomPaper sx={{ [Theme().breakpoints.down("sm")]: { padding: 0.5 } }}>
+      <Box
+        display="flex"
+        gap={0.5}
+        sx={{
+          [Theme().breakpoints.down("sm")]: {
+            flexDirection: "column",
+          },
+        }}
+      >
+        <Box
+          width="60%"
+          sx={{ [Theme().breakpoints.down("sm")]: { width: "100%" } }}
+          minWidth={100}
+        >
           <TextField
             fullWidth
             size="small"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-        </div>
-        <div className="todo-select">
-          <FormControl fullWidth size="small">
+        </Box>
+        <Box flex={1} display="flex" gap={0.5}>
+          <FormControl size="small" sx={{ width: "50%" }}>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
@@ -68,45 +85,45 @@ const TodoList = () => {
               <MenuItem value="Low">Low</MenuItem>
             </Select>
           </FormControl>
-        </div>
-        <div className="todo-add">
           <Button
             variant="contained"
-            sx={{ height: "38px" }}
-            fullWidth
+            sx={{ height: "38px", flex: 1 }}
             onClick={() => handleAddTodo()}
           >
             add
           </Button>
-        </div>
-      </div>
+        </Box>
+      </Box>
 
-      <div className="todo-content">
+      <Box marginTop={1}>
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
             <CircularProgress />
           </Box>
         ) : (
-          todoList.map((todo, index) => {
-            return (
-              <Todo
-                key={todo._id ?? index}
-                todo={todo}
-                loadingUpdate={loadingUpdate}
-                loadingDelete={loadingDelete}
-                handleChangeCheck={handleChangeCheck}
-              />
-            );
-          })
+          <List>
+            {todoList.map((todo, index) => {
+              return (
+                <Todo
+                  key={todo._id ?? index}
+                  todo={todo}
+                  loadingUpdate={loadingUpdate}
+                  loadingDelete={loadingDelete}
+                  handleChangeCheck={handleChangeCheck}
+                />
+              );
+            })}
+          </List>
         )}
 
+        {/* show progress when user create new todo (waiting system call api and update store) */}
         {loadingCreate && (
           <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
             <CircularProgress size={35} />
           </Box>
         )}
-      </div>
-    </div>
+      </Box>
+    </CustomPaper>
   );
 };
 

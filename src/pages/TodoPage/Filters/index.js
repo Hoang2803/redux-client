@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 import {
   Accordion,
   AccordionDetails,
-  AccordionSummary,
+  Box,
   Chip,
   FormControl,
   FormControlLabel,
@@ -13,14 +14,20 @@ import {
   ListItemText,
   Radio,
   RadioGroup,
+  styled,
   TextField,
   Typography,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-import filtersSlide from "./filtersSlide";
+import filtersSlide from "./filtersSlice";
+import { CustomPaper } from "../../../Themes/styles";
+import { CustomAccordionSummary } from "../style";
 
-import "./Filter.css";
+const FilterTitle = styled(Typography)(({ theme }) => ({
+  fontSize: "18px",
+  fontWeight: "bold",
+}));
 
 const Filter = () => {
   const [expanded, setExpanded] = useState(false);
@@ -30,6 +37,15 @@ const Filter = () => {
 
   const dispatch = useDispatch();
 
+  const location = useLocation();
+
+  useEffect(() => {
+    dispatch(filtersSlide.actions.searchFilterChange(""));
+    dispatch(filtersSlide.actions.statusFilterChange("all"));
+    dispatch(filtersSlide.actions.PriorityFilterChange([]));
+  }, [dispatch, location.pathname]);
+
+  // -------- handle when use choose a propority ---------
   const handleAddPriority = (data) => {
     const priorities = priorityList.filter((i) => i !== data);
     setPriorityList([...priorities, data]);
@@ -37,6 +53,7 @@ const Filter = () => {
     setExpanded(false);
   };
 
+  // --------- handle when user delete a propority --------
   const handleDelete = (data) => {
     const newPriorities = priorityList.filter((i) => i !== data);
     setPriorityList(newPriorities);
@@ -44,38 +61,37 @@ const Filter = () => {
     setExpanded(false);
   };
 
+  // -------- handle when user enter in search input --------
   const handleChangeSeach = (e) => {
     setSearchValue(e.target.value);
     dispatch(filtersSlide.actions.searchFilterChange(e.target.value));
   };
 
+  // --------- handle when user choose a type of status --------
   const handleChangeStatus = (e) => {
     setStatus(e.target.value);
     dispatch(filtersSlide.actions.statusFilterChange(e.target.value));
   };
 
   return (
-    <div className="filter">
-      <div className="filter-search">
-        <p className="filter-title">Search</p>
-        <div className="search-input">
-          <TextField
-            placeholder="search todo..."
-            fullWidth
-            variant="standard"
-            value={searchValue}
-            onChange={(e) => handleChangeSeach(e)}
-          />
-        </div>
-      </div>
+    <CustomPaper>
+      <Box>
+        <FilterTitle>Search</FilterTitle>
+        <TextField
+          placeholder="search todo..."
+          fullWidth
+          variant="standard"
+          value={searchValue}
+          onChange={(e) => handleChangeSeach(e)}
+          sx={{ mt: 1 }}
+        />
+      </Box>
 
-      <div className="filter-status">
-        <p className="filter-title">Filter by status</p>
+      <Box mt={3}>
+        <FilterTitle>Filter by status</FilterTitle>
         <FormControl>
           <RadioGroup
             row
-            aria-labelledby="demo-row-radio-buttons-group-label"
-            name="row-radio-buttons-group"
             value={status}
             onChange={(e) => handleChangeStatus(e)}
           >
@@ -88,21 +104,20 @@ const Filter = () => {
             <FormControlLabel value="todo" control={<Radio />} label="Todo" />
           </RadioGroup>
         </FormControl>
-      </div>
+      </Box>
 
-      <div className="filter-priority">
-        <p className="filter-title">Filter by Priority</p>
+      <Box mt={3}>
+        <FilterTitle>Filter by Priority</FilterTitle>
         <Accordion expanded={expanded} sx={{ mt: 1 }}>
-          <AccordionSummary
+          <CustomAccordionSummary
             expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
             onClick={() => setExpanded(!expanded)}
           >
             {priorityList.length > 0 ? (
               priorityList.map((data) => {
                 return (
                   <Chip
+                    key={data}
                     label={data}
                     onDelete={() => handleDelete(data)}
                     color={
@@ -112,20 +127,15 @@ const Filter = () => {
                         ? "info"
                         : "default"
                     }
-                    sx={{ mr: 3 }}
                   />
                 );
               })
             ) : (
               <Typography sx={{ color: "#777" }}>Choose Priority...</Typography>
             )}
-          </AccordionSummary>
+          </CustomAccordionSummary>
           <AccordionDetails sx={{ pt: 0, pb: 0 }}>
-            <List
-              component="nav"
-              aria-label="secondary mailbox folder"
-              sx={{ pt: 0, pb: 0 }}
-            >
+            <List component="nav" sx={{ pt: 0, pb: 0 }}>
               <ListItemButton onClick={() => handleAddPriority("High")}>
                 <ListItemText primary="High" sx={{ color: "#ed6c02" }} />
               </ListItemButton>
@@ -138,8 +148,8 @@ const Filter = () => {
             </List>
           </AccordionDetails>
         </Accordion>
-      </div>
-    </div>
+      </Box>
+    </CustomPaper>
   );
 };
 

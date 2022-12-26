@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import request from "../../config/api";
+import request from "../../../config/api";
 
-const todoSlide = createSlice({
+const todoSlice = createSlice({
   name: "todo",
   initialState: {
     loading: false,
@@ -83,4 +83,4 @@ export const deleteTodo = createAsyncThunk("todo/deleteTodo", async (id) => {
   return res.data.todos;
 });
 
-export default todoSlide;
+export default todoSlice;

@@ -11,22 +11,26 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  FormControlLabel,
   IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
   Typography,
 } from "@mui/material";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import { deleteTodo } from "../TodoList/todoSlide";
+import { deleteTodo } from "../TodoList/todoSlice";
+import Theme from "../../../Themes";
+import { BoxChip } from "../style";
 
 const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
-  const [open, setOpen] = useState(false);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
   const [isLoadingUpdate, setIsLoadingUpdate] = useState(false);
   const [isLoadingDelete, setIsLoadingDelete] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleClose = () => {
-    setOpen(false);
+    setOpenConfirmDelete(false);
   };
 
   const handleChangeChexBox = (completed, _id) => {
@@ -42,6 +46,7 @@ const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
     if (!loadingDelete) setIsLoadingDelete(false);
   }, [loadingDelete]);
 
+  // ---------- handle when user delete a todo ----------
   const handleDeleteTodo = () => {
     dispatch(deleteTodo(todo._id));
     handleClose();
@@ -49,28 +54,36 @@ const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
   };
 
   return (
-    <div className="todo-item">
-      <FormControlLabel
-        control={
+    <>
+      <ListItem
+        secondaryAction={
+          <IconButton
+            onClick={() => setOpenConfirmDelete(true)}
+            sx={{ [Theme().breakpoints.down("sm")]: { display: "none" } }}
+          >
+            <DeleteForeverIcon color={"secondary"} />
+          </IconButton>
+        }
+        sx={{ [Theme().breakpoints.down("sm")]: { padding: 0 } }}
+      >
+        <ListItemIcon>
           <Checkbox
             checked={todo.completed ?? false}
             onChange={() => handleChangeChexBox(todo.completed, todo._id)}
           />
-        }
-        label={
-          <Typography
-            sx={{ textDecoration: todo.completed ? "line-through" : "none" }}
-          >
-            {todo.name ?? ""}
-          </Typography>
-        }
-      />
+        </ListItemIcon>
+        <ListItemText
+          primary={todo.name ?? ""}
+          sx={{
+            textDecoration: todo.completed ? "line-through" : "none",
+          }}
+        />
 
-      {isLoadingUpdate && <CircularProgress size={25} />}
-      {isLoadingDelete && <CircularProgress size={25} />}
+        {/* show progress when user update status or delete a todo (waiting system call api and update store) */}
+        {isLoadingUpdate && <CircularProgress size={25} />}
+        {isLoadingDelete && <CircularProgress size={25} />}
 
-      <div className="todo-item-control">
-        <div className="todo-priority">
+        <BoxChip>
           <Chip
             label={
               <Typography
@@ -89,14 +102,10 @@ const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
                 : "default"
             }
           />
-        </div>
-        <IconButton onClick={() => setOpen(true)}>
-          <DeleteForeverIcon color={"secondary"} />
-        </IconButton>
-      </div>
-
+        </BoxChip>
+      </ListItem>
       <Dialog
-        open={open}
+        open={openConfirmDelete}
         onClose={() => handleClose()}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
@@ -114,7 +123,7 @@ const Todo = ({ todo, handleChangeCheck, loadingUpdate, loadingDelete }) => {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </>
   );
 };
 

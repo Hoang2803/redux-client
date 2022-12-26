@@ -1,38 +1,19 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { Route, Routes } from "react-router-dom";
 
-import { Grid } from "@mui/material";
-
-import Filter from "./components/Filters";
-import TodoList from "./components/TodoList";
-import { getTodos } from "./components/TodoList/todoSlide";
-
-import "./App.css";
+import Layout from "./components/Layout";
+import DicePage from "./pages/DicePage";
+import HomePage from "./pages/HomePage";
+import TodoPage from "./pages/TodoPage";
 
 function App() {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getTodos());
-  }, []);
-
   return (
-    <div className="wrapper">
-      <div className="container">
-        <h2 className="title">Todo app with Redux</h2>
-        <div className="main-content">
-          <Grid container spacing={2}>
-            <Grid item xs={5}>
-              <Filter />
-            </Grid>
-
-            <Grid item xs={7}>
-              <TodoList />
-            </Grid>
-          </Grid>
-        </div>
-      </div>
-    </div>
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/todo" element={<TodoPage />} />
+        <Route path="/dice" element={<DicePage />} />
+      </Route>
+    </Routes>
   );
 }
 
