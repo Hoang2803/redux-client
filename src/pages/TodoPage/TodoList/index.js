@@ -13,7 +13,7 @@ import {
 } from "@mui/material";
 
 import { createTodo, updateTodo } from "./todoSlice";
-import { todosRemainingSelector } from "../../../redux/todoSelectors";
+import { todosRemainingSelector } from "../../../redux/selectors/todoSelectors";
 import { CustomPaper } from "../../../Themes/styles";
 import { ShowWarning } from "../../../config/notistack";
 import Theme from "../../../Themes";

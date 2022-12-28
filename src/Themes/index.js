@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material";
 import { useSelector } from "react-redux";
-import { getMode } from "../redux/modeSelector";
+import { getMode } from "../redux/selectors/modeSelector";
 
 const Theme = () => {
   const mode = useSelector(getMode);
